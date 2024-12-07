@@ -1,0 +1,17 @@
+{
+    "exchanges": {
+      "Mexc": {
+        "enabled": true,
+        "symbols": ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
+      },
+      "Coinbase": {
+        "enabled": true,
+        "symbols": ["BTC-USD", "ETH-USD"]
+      },
+      "HTX": {
+        "enabled": false,
+        "symbols": ["market.btcusdt.bbo", "market.ethusdt.bbo"]
+      }
+    }
+  }
+  
