@@ -1,12 +1,16 @@
-use crate::datastore::ExchangeFormat;
 use crate::datastore::{update_ticker_data, DataStore};
+use crate::datastore::{ExchangeFormat, MessageCounter};
 use flate2::read::GzDecoder;
 use futures::{SinkExt, StreamExt};
 use serde_json::json;
 use std::io::prelude::*;
 use tokio::sync::mpsc;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
-pub async fn htx_connection(data_store: DataStore, mut subscription_rx: mpsc::Receiver<String>) {
+pub async fn htx_connection(
+    data_store: DataStore,
+    mut subscription_rx: mpsc::Receiver<String>,
+    message_counter: MessageCounter,
+) {
     let url = "wss://api.huobi.pro/ws";
     let (ws_stream, _) = connect_async(url).await.expect("Failed to connect to HTX");
     let (mut write, mut read) = ws_stream.split();
@@ -16,7 +20,8 @@ pub async fn htx_connection(data_store: DataStore, mut subscription_rx: mpsc::Re
         while let Some(subscription) = subscription_rx.recv().await {
             let msg = Message::Text(subscription);
             if write.send(msg).await.is_err() {
-                break; // Connection closed
+                eprintln!("Failed to send subscription message.");
+                break; // Exit if the connection is closed
             }
         }
     });
@@ -29,6 +34,13 @@ pub async fn htx_connection(data_store: DataStore, mut subscription_rx: mpsc::Re
             }
 
             Message::Binary(binary_data) => {
+                {
+                    let mut counter = message_counter.write().await;
+
+                    let count = counter.entry("HTX".to_string()).or_insert(0);
+
+                    *count += 1;
+                }
                 if let Ok(decompressed) = decompress_gzip(&binary_data) {
                     let decompresed_x = decompressed.clone();
 

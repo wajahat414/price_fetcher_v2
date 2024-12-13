@@ -1,17 +1,20 @@
 {
-    "exchanges": {
-      "Mexc": {
-        "enabled": true,
-        "symbols": ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
-      },
-      "Coinbase": {
-        "enabled": true,
-        "symbols": ["BTC-USD", "ETH-USD"]
-      },
-      "HTX": {
-        "enabled": false,
-        "symbols": ["market.btcusdt.bbo", "market.ethusdt.bbo"]
-      }
+  "exchanges": {
+    "Mexc": {
+      "enabled": true,
+      "symbols": ["BTCUSDT"]
+    },
+    "Coinbase": {
+      "enabled": true,
+      "symbols": ["BTCUSDT"]
+    },
+    "HTX": {
+      "enabled": true,
+      "symbols": ["BTCUSDT"]
+    },
+    "KuKoin": {
+      "enabled": true,
+      "symbols": ["BTCUSDT"]
     }
   }
-  
+}
